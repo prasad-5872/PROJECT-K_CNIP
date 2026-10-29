@@ -1,0 +1,21 @@
+package com.cnip.fooddelivery;
+
+import com.cnip.fooddelivery.service.FoodService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+class FoodDeliveryApplicationTests {
+
+    @Autowired
+    private FoodService foodService;
+
+    @Test
+    void contextLoads() {
+        assertThat(foodService.getRestaurants()).isNotEmpty();
+        assertThat(foodService.getRestaurant("burger-house")).isNotNull();
+    }
+}

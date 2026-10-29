@@ -1,0 +1,142 @@
+package com.cnip.fooddelivery.service;
+
+import com.cnip.fooddelivery.model.MenuItem;
+import com.cnip.fooddelivery.model.Restaurant;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class FoodService {
+
+    private final List<Restaurant> restaurants = new ArrayList<>();
+    private final Map<String, Restaurant> restaurantMap = new LinkedHashMap<>();
+    private final Map<String, MenuItem> itemMap = new LinkedHashMap<>();
+
+    public FoodService() {
+        buildRestaurants();
+    }
+
+    public List<Restaurant> getRestaurants() {
+        return restaurants;
+    }
+
+    public Restaurant getRestaurant(String slug) {
+        return restaurantMap.get(slug);
+    }
+
+    public MenuItem getItemById(String itemId) {
+        return itemMap.get(itemId);
+    }
+
+    public List<MenuItem> getMenuItems(String restaurantSlug) {
+        Restaurant restaurant = restaurantMap.get(restaurantSlug);
+        return restaurant == null ? List.of() : restaurant.getMenu();
+    }
+
+    public List<CartLine> buildCartLines(Map<String, Integer> cart) {
+        List<CartLine> lines = new ArrayList<>();
+        if (cart == null) {
+            return lines;
+        }
+
+        for (Map.Entry<String, Integer> entry : cart.entrySet()) {
+            String key = entry.getKey();
+            int quantity = entry.getValue();
+            if (quantity <= 0) {
+                continue;
+            }
+
+            String[] parts = key.split(":", 2);
+            if (parts.length != 2) {
+                continue;
+            }
+
+            String restaurantSlug = parts[0];
+            String itemId = parts[1];
+            Restaurant restaurant = restaurantMap.get(restaurantSlug);
+            MenuItem item = itemMap.get(itemId);
+            if (restaurant == null || item == null) {
+                continue;
+            }
+            lines.add(new CartLine(item, quantity, restaurantSlug, restaurant.getName()));
+        }
+
+        return lines;
+    }
+
+    public double calculateSubtotal(Map<String, Integer> cart) {
+        return buildCartLines(cart).stream()
+                .mapToDouble(line -> line.item().getPrice() * line.quantity())
+                .sum();
+    }
+
+    public record CartLine(MenuItem item, int quantity, String restaurantSlug, String restaurantName) {
+    }
+
+    private void buildRestaurants() {
+        Restaurant pureVeg = new Restaurant(
+                "r1", "Pure Veg Express", "pure-veg-express", "North Indian • Chinese", "20-28 min", "Top Rated",
+                25.0, 4.8, 2841, "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80",
+                "#ffb000"
+        );
+        pureVeg.setMenu(List.of(
+                new MenuItem("pve-1", "Paneer Butter Masala", "Creamy tomato gravy with soft paneer cubes.", 219.0, "Bestsellers", "Most loved", "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("pve-2", "Veg Biryani", "Fragrant rice with vegetables and aromatic spices.", 189.0, "Rice & Biryani", "Chef special", "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("pve-3", "Chilli Garlic Noodles", "Wok-tossed noodles with crunchy vegetables.", 169.0, "Chinese", "Hot & spicy", "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("pve-4", "Tandoori Platter", "Paneer, mushrooms, peppers and dips.", 249.0, "Starters", "Chef choice", "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80", true)
+        ));
+
+        Restaurant burger = new Restaurant(
+                "r2", "Burger House", "burger-house", "Burgers • Wraps", "18-25 min", "Best Seller",
+                32.0, 4.7, 3652, "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80",
+                "#ff6a3d"
+        );
+        burger.setMenu(List.of(
+                new MenuItem("bh-1", "Classic Veg Burger", "Crisp patty, onion, lettuce and signature sauce.", 179.0, "Burgers", "Veg", "https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("bh-2", "Crispy Chicken Burger", "Juicy grilled chicken with smoky sauce.", 219.0, "Burgers", "Popular", "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80", false),
+                new MenuItem("bh-3", "Loaded Fries", "Golden fries with cheese, herbs and crunch.", 119.0, "Sides", "Add-on", "https://images.unsplash.com/photo-1576106679428-1950a4a3d830?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("bh-4", "Crispy Wrap Box", "Crispy wraps with fries and dip.", 199.0, "Combos", "Combo", "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=80", false)
+        ));
+
+        Restaurant pizza = new Restaurant(
+                "r3", "Slice & Spice", "slice-and-spice", "Italian • Pizza", "25-35 min", "Super Fast",
+                29.0, 4.9, 4821, "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80",
+                "#ff4d6d"
+        );
+        pizza.setMenu(List.of(
+                new MenuItem("ss-1", "Margherita Supreme", "Classic tomato base, mozzarella and basil.", 249.0, "Pizza", "Best seller", "https://images.unsplash.com/photo-1548365328-9f547fb9587c?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("ss-2", "Farmhouse Feast", "Loaded with veggies, olives and herbs.", 279.0, "Pizza", "Veg", "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("ss-3", "Chicken Tikka Pizza", "Spicy tikka chicken with jalapeno kick.", 319.0, "Pizza", "Hot", "https://images.unsplash.com/photo-1552539618-7eec9b4d1796?auto=format&fit=crop&w=600&q=80", false),
+                new MenuItem("ss-4", "Garlic Bread", "Soft bread with herbs and garlic butter.", 129.0, "Sides", "Popular", "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80", true)
+        ));
+
+        Restaurant smoothie = new Restaurant(
+                "r4", "Fresh Bowl Co.", "fresh-bowl-co", "Healthy • Smoothies", "15-20 min", "Healthy Pick",
+                18.0, 4.6, 1743, "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=900&q=80",
+                "#39b68d"
+        );
+        smoothie.setMenu(List.of(
+                new MenuItem("fbc-1", "Mango Protein Shake", "Real fruit, yogurt and protein boost.", 179.0, "Smoothies", "Protein", "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("fbc-2", "Avocado Power Bowl", "Quinoa, avocado, greens and seeds.", 229.0, "Bowls", "Healthy", "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("fbc-3", "Berry Blast Smoothie", "Blueberries, banana and almond milk.", 169.0, "Smoothies", "Low sugar", "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80", true),
+                new MenuItem("fbc-4", "Citrus Salad Bowl", "Crisp greens, oranges and feta.", 199.0, "Salads", "Fresh", "https://images.unsplash.com/photo-1546793665-c74683f339c1?auto=format&fit=crop&w=600&q=80", true)
+        ));
+
+        addRestaurant(pureVeg);
+        addRestaurant(burger);
+        addRestaurant(pizza);
+        addRestaurant(smoothie);
+    }
+
+    private void addRestaurant(Restaurant restaurant) {
+        restaurants.add(restaurant);
+        restaurantMap.put(restaurant.getSlug(), restaurant);
+        for (MenuItem item : restaurant.getMenu()) {
+            itemMap.put(item.getId(), item);
+        }
+    }
+}

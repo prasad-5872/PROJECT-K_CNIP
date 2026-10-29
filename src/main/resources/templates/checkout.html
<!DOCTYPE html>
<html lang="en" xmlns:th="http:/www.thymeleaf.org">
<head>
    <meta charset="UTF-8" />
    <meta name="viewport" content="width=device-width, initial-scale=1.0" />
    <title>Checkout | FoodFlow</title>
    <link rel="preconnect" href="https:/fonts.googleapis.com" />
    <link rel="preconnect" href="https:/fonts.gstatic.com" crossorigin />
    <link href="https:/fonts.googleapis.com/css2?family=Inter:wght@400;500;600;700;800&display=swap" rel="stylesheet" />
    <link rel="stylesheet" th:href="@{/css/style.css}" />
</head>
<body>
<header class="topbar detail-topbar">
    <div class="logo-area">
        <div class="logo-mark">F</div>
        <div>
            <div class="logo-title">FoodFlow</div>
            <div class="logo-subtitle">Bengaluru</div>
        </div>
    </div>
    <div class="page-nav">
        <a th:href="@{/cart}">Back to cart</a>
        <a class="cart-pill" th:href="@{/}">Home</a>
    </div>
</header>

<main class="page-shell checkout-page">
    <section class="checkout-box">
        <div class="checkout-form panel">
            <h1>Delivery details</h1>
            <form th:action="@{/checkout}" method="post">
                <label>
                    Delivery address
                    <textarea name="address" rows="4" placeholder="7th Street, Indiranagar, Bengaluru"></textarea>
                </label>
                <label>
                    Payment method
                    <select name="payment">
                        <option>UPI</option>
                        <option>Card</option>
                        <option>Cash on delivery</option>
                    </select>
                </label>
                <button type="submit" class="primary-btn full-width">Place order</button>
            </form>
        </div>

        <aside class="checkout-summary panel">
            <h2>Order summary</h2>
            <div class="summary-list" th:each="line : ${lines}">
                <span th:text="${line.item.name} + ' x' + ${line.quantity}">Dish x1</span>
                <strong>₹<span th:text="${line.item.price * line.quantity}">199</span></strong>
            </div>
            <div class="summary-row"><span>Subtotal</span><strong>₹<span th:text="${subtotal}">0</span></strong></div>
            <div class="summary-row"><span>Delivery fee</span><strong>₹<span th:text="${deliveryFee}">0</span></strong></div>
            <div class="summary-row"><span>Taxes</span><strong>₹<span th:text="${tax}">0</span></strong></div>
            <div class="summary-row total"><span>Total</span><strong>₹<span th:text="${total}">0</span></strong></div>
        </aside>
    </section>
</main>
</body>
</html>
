@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Cart | FoodFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<header class="topbar detail-topbar">
+    <div class="logo-area">
+        <div class="logo-mark">F</div>
+        <div>
+            <div class="logo-title">FoodFlow</div>
+            <div class="logo-subtitle">Bengaluru</div>
+        </div>
+    </div>
+    <div class="page-nav">
+        <a th:href="@{/}">Continue shopping</a>
+        <a class="cart-pill" th:href="@{/checkout}">Checkout</a>
+    </div>
+</header>
+
+<main class="page-shell cart-page">
+    <section class="cart-box">
+        <div class="cart-header">
+            <h1>Your cart</h1>
+            <form th:action="@{/cart/clear}" method="post">
+                <button type="submit" class="clear-btn">Clear cart</button>
+            </form>
+        </div>
+
+        <div th:if="${#lists.isEmpty(lines)}" class="empty-state">
+            <h2>Your cart is empty</h2>
+            <p>Order your favorite meals from the best local restaurants.</p>
+            <a th:href="@{/}" class="primary-btn">Explore restaurants</a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(lines)}" class="cart-body">
+            <div class="cart-items">
+                <div class="cart-item" th:each="line : ${lines}">
+                    <div class="mini-thumb" th:style="|background-image: url('${line.item.image}');|"></div>
+                    <div class="cart-item-copy">
+                        <h3 th:text="${line.item.name}">Dish name</h3>
+                        <p th:text="${line.restaurantName}">Restaurant</p>
+                    </div>
+                    <div class="qty-box">
+                        <span>Qty: <strong th:text="${line.quantity}">1</strong></span>
+                    </div>
+                    <div class="price-box">
+                        <strong>₹<span th:text="${line.item.price * line.quantity}">199</span></strong>
+                    </div>
+                    <form th:action="@{'/cart/remove/' + ${line.restaurantSlug} + '/' + ${line.item.id}}" method="post">
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                </div>
+            </div>
+
+            <aside class="summary-panel">
+                <h2>Bill details</h2>
+                <div class="summary-row"><span>Item total</span><strong>₹<span th:text="${subtotal}">0</span></strong></div>
+                <div class="summary-row"><span>Delivery fee</span><strong>₹<span th:text="${deliveryFee}">0</span></strong></div>
+                <div class="summary-row total"><span>Total</span><strong>₹<span th:text="${total}">0</span></strong></div>
+                <a th:href="@{/checkout}" class="primary-btn full-width">Proceed to checkout</a>
+            </aside>
+        </div>
+    </section>
+</main>
+</body>
+</html>

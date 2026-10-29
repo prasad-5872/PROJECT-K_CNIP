@@ -1,0 +1,133 @@
+package com.cnip.fooddelivery.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Restaurant {
+    private String id;
+    private String name;
+    private String slug;
+    private String cuisine;
+    private String eta;
+    private String badge;
+    private double deliveryFee;
+    private double rating;
+    private int reviews;
+    private String image;
+    private String accent;
+    private List<MenuItem> menu = new ArrayList<>();
+
+    public Restaurant() {
+    }
+
+    public Restaurant(String id, String name, String slug, String cuisine, String eta, String badge,
+                      double deliveryFee, double rating, int reviews, String image, String accent) {
+        this.id = id;
+        this.name = name;
+        this.slug = slug;
+        this.cuisine = cuisine;
+        this.eta = eta;
+        this.badge = badge;
+        this.deliveryFee = deliveryFee;
+        this.rating = rating;
+        this.reviews = reviews;
+        this.image = image;
+        this.accent = accent;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String getCuisine() {
+        return cuisine;
+    }
+
+    public void setCuisine(String cuisine) {
+        this.cuisine = cuisine;
+    }
+
+    public String getEta() {
+        return eta;
+    }
+
+    public void setEta(String eta) {
+        this.eta = eta;
+    }
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
+    }
+
+    public double getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(double deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public int getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(int reviews) {
+        this.reviews = reviews;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getAccent() {
+        return accent;
+    }
+
+    public void setAccent(String accent) {
+        this.accent = accent;
+    }
+
+    public List<MenuItem> getMenu() {
+        return menu;
+    }
+
+    public void setMenu(List<MenuItem> menu) {
+        this.menu = menu;
+    }
+}

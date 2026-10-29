@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order confirmed | FoodFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<header class="topbar detail-topbar">
+    <div class="logo-area">
+        <div class="logo-mark">F</div>
+        <div>
+            <div class="logo-title">FoodFlow</div>
+            <div class="logo-subtitle">Bengaluru</div>
+        </div>
+    </div>
+    <div class="page-nav">
+        <a th:href="@{/}">Back to home</a>
+    </div>
+</header>
+
+<main class="page-shell success-page">
+    <section class="success-box">
+        <div class="success-icon">✓</div>
+        <h1>Order placed successfully</h1>
+        <p>Your food is being prepared and will reach you soon.</p>
+
+        <div class="order-summary" th:if="${order != null}">
+            <div class="summary-row"><span>Delivery address</span><strong th:text="${order.address}">Address</strong></div>
+            <div class="summary-row"><span>Payment</span><strong th:text="${order.payment}">UPI</strong></div>
+            <div class="summary-row"><span>Total</span><strong>₹<span th:text="${order.total}">0</span></strong></div>
+        </div>
+
+        <a th:href="@{/}" class="primary-btn">Order more</a>
+    </section>
+</main>
+</body>
+</html>
