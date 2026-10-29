@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Emergency Network App (GUI)",
+            "request": "launch",
+            "mainClass": "emergency.EmergencyNetworkApp",
+            "classPaths": ["out"],
+            "preLaunchTask": "compile"
+        },
+        {
+            "type": "java",
+            "name": "Run Automated Self-Tests",
+            "request": "launch",
+            "mainClass": "emergency.ProjectSelfTest",
+            "classPaths": ["out"],
+            "preLaunchTask": "compile"
+        }
+    ]
+}

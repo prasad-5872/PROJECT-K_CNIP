@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compile",
+            "type": "shell",
+            "command": "powershell -Command \"if (-not (Test-Path 'out')) { New-Item -ItemType Directory -Path 'out' }; $sources = Get-ChildItem -Recurse -Path 'src', 'test' -Filter *.java | ForEach-Object { $_.FullName }; javac -d out $sources\"",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$javac"]
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "java -cp out emergency.ProjectSelfTest",
+            "dependsOn": "compile",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Application (GUI)",
+            "type": "shell",
+            "command": "java -cp out emergency.EmergencyNetworkApp",
+            "dependsOn": "compile",
+            "problemMatcher": []
+        }
+    ]
+}
